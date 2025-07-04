@@ -1,30 +1,22 @@
 #include <Typor/frontend.hpp>
-#include <Typor/backend/backend.hpp>
-#include <Typor/backend/sqlite/sqlite.hpp>
+#include <Typor/backend/sqlite/instance.hpp>
 #include <Typor/error.hpp>
 
 
-auto bar() -> Typor::Failable<int> {
-	if (true)
-		return Typor::MakeErrorStack("ERROR : {}", 69);
-	return 42;
-}
-
-auto foo() -> Typor::Failable<int> {
-	Typor::Failable barResult {bar()};
-	if (!barResult)
-		return Typor::AddToErrorStack(barResult, "2nd error");
-	return 12 + *barResult;
-}
-
-
 int main(int, char**) {
-	Typor::sayHello();
-	Typor::backend::sqlite::sayHello();
+	Typor::Failable instanceWithError {Typor::backend::sqlite::Instance::create()};
+	if (!instanceWithError)
+		return Typor::logErrorStack(instanceWithError.error()), EXIT_FAILURE;
+	auto instance {std::move(*instanceWithError)};
 
-	Typor::Failable fooResult {foo()};
-	if (!fooResult)
-		return Typor::logErrorStack(fooResult.error()), EXIT_FAILURE;
+	Typor::Failable databaseWithError {instance.makeDatabase(Typor::backend::Database::CreateInfos{
+		.name = "database",
+		.directory = "./build"
+	})};
+	if (!databaseWithError)
+		return Typor::logErrorStack(databaseWithError.error()), EXIT_FAILURE;
+	auto database {std::move(*databaseWithError)};
 
+	std::println("Open database");
 	return EXIT_SUCCESS;
 }
