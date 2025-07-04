@@ -1,0 +1,21 @@
+include(${PROJECT_SOURCE_DIR}/cmake/config.cmake)
+
+
+set(TYPOR_BACKEND_CONFIG_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(TYPOR_BACKEND_CONFIG_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+file(GLOB_RECURSE TYPOR_BACKEND_SOURCE_FILES ${TYPOR_BACKEND_CONFIG_SOURCE_DIR}/*.cpp)
+
+add_library(typor_backend STATIC ${TYPOR_BACKEND_SOURCE_FILES})
+target_include_directories(typor_backend PUBLIC ${TYPOR_BACKEND_CONFIG_INCLUDE_DIR})
+# target_compile_features(typor_backend PUBLIC TYPOR_CONFIG_CXX_STANDARD)
+
+add_library(Typor::backend ALIAS typor_backend)
+
+
+foreach (BACKEND IN LISTS TYPOR_CONFIG_SUPPORTED_BACKEND)
+	string(TOLOWER ${BACKEND} LOWER_BACKEND)
+	if (TYPOR_CONFIG_BUILD_${BACKEND}_BACKEND)
+		add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/${LOWER_BACKEND})
+	endif()
+endforeach()

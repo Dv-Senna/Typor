@@ -39,3 +39,25 @@
 
 # debug information files
 *.dwo
+
+# cmake
+__cmake_systeminformation/*
+
+# build directory
+build/*
+
+# scripts
+*.sh
+*.bat
+*.ps1
+!scripts/*.sh
+!scripts/*.bat
+!scripts/*.ps1
+
+# IDEs
+.vscode/*
+.cache/*
+.clangd
+
+# locals
+.locals/*
