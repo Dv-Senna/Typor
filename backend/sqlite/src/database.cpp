@@ -9,7 +9,7 @@ namespace Typor::backend::sqlite {
 	}
 
 
-	auto Database::create(Typor::backend::Database::CreateInfos &&createInfos) noexcept
+	auto Database::create(CreateInfos&& createInfos) noexcept
 		-> Typor::Failable<Database>
 	{
 		std::filesystem::path dbFile {createInfos.directory / createInfos.name};

@@ -4,12 +4,12 @@
 
 
 int main(int, char**) {
-	Typor::Failable instanceWithError {Typor::backend::sqlite::Instance::create()};
+	Typor::Failable instanceWithError {Typor::backend::sqlite::Instance::create({})};
 	if (!instanceWithError)
 		return Typor::logErrorStack(instanceWithError.error()), EXIT_FAILURE;
 	auto instance {std::move(*instanceWithError)};
 
-	Typor::Failable databaseWithError {instance.makeDatabase(Typor::backend::Database::CreateInfos{
+	Typor::Failable databaseWithError {instance.makeDatabase(Typor::backend::sqlite::Database::CreateInfos{
 		.name = "database",
 		.directory = "./build"
 	})};

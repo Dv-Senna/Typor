@@ -228,4 +228,14 @@ namespace Typor {
 			);
 		}
 	}
+
+
+	template <typename T>
+	struct is_failable : std::false_type {};
+
+	template <typename T>
+	struct is_failable<Failable<T>> : std::true_type {};
+
+	template <typename T>
+	concept failable = is_failable<T>::value;
 }

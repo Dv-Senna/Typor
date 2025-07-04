@@ -9,10 +9,13 @@
 
 
 namespace Typor::backend::sqlite {
-	class Database final : public Typor::backend::Database {
+	class Database final {
+		Database(const Database&) = delete;
+		auto operator=(const Database&) = delete;
+
 		public:
 			constexpr Database() noexcept : m_db {nullptr} {}
-			~Database() override;
+			~Database();
 
 			constexpr Database(Database&& db) noexcept : m_db {db.m_db} {db.m_db = nullptr;}
 			constexpr auto operator=(Database&& db) noexcept -> Database& {
@@ -21,11 +24,15 @@ namespace Typor::backend::sqlite {
 				return *this;
 			}
 
-			static auto create(Typor::backend::Database::CreateInfos &&createInfos) noexcept
+			using CreateInfos = Typor::backend::DatabaseDescription;
+
+			static auto create(CreateInfos&& createInfos) noexcept
 				-> Typor::Failable<Database>;
 
 
 		private:
 			sqlite3 *m_db;
 	};
+
+	static_assert(Typor::backend::database<Database>);
 }
