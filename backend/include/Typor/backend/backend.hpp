@@ -2,5 +2,8 @@
 
 
 namespace Typor::backend {
-	void sayHello();
+	class Backend {
+		public:
+			Backend();
+	};
 }
